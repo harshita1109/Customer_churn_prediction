@@ -65,13 +65,13 @@ Final File Used: `cleaned_telco_churn.csv` (preprocessed with Python)
 
 ##  Repository Structure
 
-| Folder/File                  | Description                                  |
-|-----------------------------|----------------------------------------------|
-| `cleaned_telco_churn.csv"` | Cleaned dataset ready for Power BI         |
-| `Telco Customer Churn Analysis-checkpoint.ipynb"`   | Python notebook for cleaning & EDA         |
-| `Telco Customer Chrun insights Dsshbaord ` | Power BI dashboard file             |
-| `README.md`                     | Project documentation                      |
-| `Kaggle - Telco Customer Churn`                     | Orignal file                   |
+| Folder/File                             | Description                     |
+|----------------------------------------|---------------------------------|
+| `dataset.csv`                          | Original dataset               |
+| `checkpoint.csv`                       | Checkpoint data                |
+| `main.ipynb`                           | Python notebook for EDA        |
+| `Telco Customer Churn Insights Dashboard.pbix` | Power BI dashboard file |
+| `README.md`                            | Project documentation          |
 
 
 
@@ -79,16 +79,16 @@ Final File Used: `cleaned_telco_churn.csv` (preprocessed with Python)
 
 1. Clone the repository:
    bash
-   git clone [https://github.com/inolas-bit/telco-churn-analytics.git
-   cd telco-churn-analytics](https://github.com/inolas-bit/Telco-Customer-Churn-Analysis)
+   git clone https://github.com/harshita1109/Customer_churn_prediction.git
+   cd Customer_churn_prediction
 
 
 ## Author 
    About the Author
-Saloni Kumari Singh
-🎓 BCA Student | Data Analytics Enthusiast
+Harshita Sharma
+🎓 Btech Student | Data Analytics Enthusiast
 💼 Python | Power BI | SQL | Data Cleaning & EDA
-🔗 LinkedIn(https://www.linkedin.com/in/saloni-singh1329/)
+
 
 ##  Show Your Support
 If you found this project useful or inspiring:
@@ -101,7 +101,7 @@ If you found this project useful or inspiring:
  
 📌 License
 This project is for educational and portfolio purposes only.
-© 2025 Saloni Kumari Singh
+
 
 
 
