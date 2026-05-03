@@ -13,158 +13,166 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
+THEME = st.sidebar.radio("🎨 Theme", ["Dark", "Light"], index=0)
+
+if THEME == "Dark":
+    BG_COLOR = "#0f0c29"
+    CARD_BG = "rgba(255,255,255,0.05)"
+    TEXT_COLOR = "white"
+    GRID_COLOR = "rgba(255,255,255,0.1)"
+    METRIC_COLORS = {
+        'blue': ['#667eea', '#764ba2'],
+        'green': ['#11998e', '#38ef7d'],
+        'red': ['#eb3349', '#f45c43'],
+        'orange': ['#f093fb', '#f5576c']
+    }
+    PLOT_BG = "rgba(0,0,0,0)"
+    CHURN_COLORS = ['#38ef7d', '#f45c43']
+else:
+    BG_COLOR = "#f8f9fa"
+    CARD_BG = "rgba(0,0,0,0.05)"
+    TEXT_COLOR = "#1a1a2e"
+    GRID_COLOR = "rgba(0,0,0,0.1)"
+    METRIC_COLORS = {
+        'blue': ['#4a90d9', '#67b3e8'],
+        'green': ['#2ecc71', '#58d68d'],
+        'red': ['#e74c3c', '#ec7063'],
+        'orange': ['#f39c12', '#f7dc6f']
+    }
+    PLOT_BG = "white"
+    CHURN_COLORS = ['#2ecc71', '#e74c3c']
+
+CUSTOM_CSS = f"""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    html, body, [class*="css"] {{
+        font-family: 'Inter', sans-serif;
+    }}
+    
+    .stApp {{
+        background: {BG_COLOR};
+        min-height: 100vh;
+    }}
+    
+    .main-content {{
+        background: {CARD_BG};
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px;
+        margin: 10px;
+    }}
+    
+    .metric-card {{
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }}
+    
+    .metric-card:hover {{
+        transform: translateY(-5px);
+    }}
+    
+    .metric-card.blue {{
+        background: linear-gradient(135deg, {METRIC_COLORS['blue'][0]} 0%, {METRIC_COLORS['blue'][1]} 100%);
+    }}
+    
+    .metric-card.green {{
+        background: linear-gradient(135deg, {METRIC_COLORS['green'][0]} 0%, {METRIC_COLORS['green'][1]} 100%);
+    }}
+    
+    .metric-card.red {{
+        background: linear-gradient(135deg, {METRIC_COLORS['red'][0]} 0%, {METRIC_COLORS['red'][1]} 100%);
+    }}
+    
+    .metric-card.orange {{
+        background: linear-gradient(135deg, {METRIC_COLORS['orange'][0]} 0%, {METRIC_COLORS['orange'][1]} 100%);
+    }}
+    
+    .metric-value {{
+        font-size: 2.5em;
+        font-weight: 700;
+        color: white;
+    }}
+    
+    .metric-label {{
+        font-size: 0.9em;
+        color: rgba(255,255,255,0.9);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }}
+    
+    .section-header {{
+        color: {TEXT_COLOR};
+        font-size: 1.8em;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid {'rgba(255,255,255,0.2)' if THEME == 'Dark' else 'rgba(0,0,0,0.1)'};
+    }}
+    
+    .insight-card {{
+        background: {CARD_BG};
+        border-radius: 15px;
+        padding: 20px;
+        margin: 10px 0;
+        border-left: 4px solid #667eea;
+    }}
+    
+    .insight-card.success {{ border-left-color: {METRIC_COLORS['green'][0]}; }}
+    .insight-card.warning {{ border-left-color: {METRIC_COLORS['red'][0]}; }}
+    .insight-card.info {{ border-left-color: {METRIC_COLORS['blue'][0]}; }}
+    
+    .stMarkdown p, .stMarkdown li {{
+        color: {TEXT_COLOR} !important;
+    }}
+    
+    h1, h2, h3, h4, h5, h6 {{
+        color: {TEXT_COLOR} !important;
+    }}
+    
+    .stTab [data-baseweb="tab-list"] {{
+        gap: 10px;
+    }}
+    
+    .stDataFrame {{
+        background: {CARD_BG} !important;
+        border-radius: 10px !important;
+    }}
+    
+    div[data-testid="stSidebar"] {{
+        background: {'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)' if THEME == 'Dark' else 'linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%)'} !important;
+    }}
+    
+    .sidebar-section {{
+        background: {CARD_BG};
+        border-radius: 15px;
+        padding: 15px;
+        margin: 10px 0;
+    }}
+    
+    .stButton > button {{
+        background: linear-gradient(135deg, {METRIC_COLORS['blue'][0]}, {METRIC_COLORS['blue'][1]}) !important;
+        color: white !important;
+        border-radius: 10px !important;
+        border: none !important;
+    }}
+    
+    .stButton > button:hover {{
+        transform: scale(1.02);
+    }}
+</style>
+"""
+st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
 st.set_page_config(
     page_title="Telco Churn Analytics",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-CUSTOM_CSS = """
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
-    
-    .stApp {
-        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-        min-height: 100vh;
-    }
-    
-    .main-content {
-        background: rgba(255, 255, 255, 0.02);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 20px;
-        margin: 10px;
-    }
-    
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    }
-    
-    .metric-card.green {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    }
-    
-    .metric-card.red {
-        background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-    }
-    
-    .metric-card.orange {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    }
-    
-    .metric-card.blue {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    }
-    
-    .metric-value {
-        font-size: 2.5em;
-        font-weight: 700;
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .metric-label {
-        font-size: 0.9em;
-        color: rgba(255,255,255,0.9);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    .section-header {
-        color: white;
-        font-size: 1.8em;
-        font-weight: 600;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid rgba(255,255,255,0.2);
-    }
-    
-    .insight-card {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 20px;
-        margin: 10px 0;
-        border-left: 4px solid #667eea;
-        transition: all 0.3s ease;
-    }
-    
-    .insight-card:hover {
-        background: rgba(255, 255, 255, 0.15);
-        transform: translateX(5px);
-    }
-    
-    .insight-card.success {
-        border-left-color: #38ef7d;
-    }
-    
-    .insight-card.warning {
-        border-left-color: #f45c43;
-    }
-    
-    .insight-card.info {
-        border-left-color: #4facfe;
-    }
-    
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px 10px 0 0;
-        padding: 10px 20px;
-        border: none;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        color: white !important;
-    }
-    
-    .sidebar-section {
-        background: rgba(255,255,255,0.05);
-        border-radius: 15px;
-        padding: 15px;
-        margin: 10px 0;
-    }
-    
-    .chart-container {
-        background: rgba(255,255,255,0.05);
-        border-radius: 15px;
-        padding: 15px;
-        margin: 10px 0;
-    }
-    
-    h1, h2, h3 {
-        color: white !important;
-    }
-    
-    .stMarkdown p {
-        color: rgba(255,255,255,0.9);
-    }
-    
-    .dataframe {
-        background: rgba(255,255,255,0.1) !important;
-        border-radius: 10px !important;
-    }
-</style>
-"""
-st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 @st.cache_data
 def load_and_prepare_data():
@@ -227,12 +235,22 @@ def create_metric_card(value, label, card_type="blue"):
     </div>
     """
 
+def get_chart_layout(title):
+    return dict(
+        title=dict(text=title, font=dict(size=16, color=TEXT_COLOR)),
+        paper_bgcolor=PLOT_BG,
+        plot_bgcolor=PLOT_BG,
+        font=dict(color=TEXT_COLOR),
+        xaxis=dict(gridcolor=GRID_COLOR),
+        yaxis=dict(gridcolor=GRID_COLOR)
+    )
+
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/chart-growth.png", width=80)
-    st.title("📊 Churn Analytics")
+    st.markdown(f"<h2 style='color: {TEXT_COLOR};'>📊 Churn Analytics</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
-    st.markdown("### 🎛️ Filters")
+    st.markdown(f"### 🎛️ Filters", unsafe_allow_html=True)
     contract_filter = st.multiselect(
         "Contract Type",
         options=["Month-to-month", "One year", "Two year"],
@@ -246,8 +264,8 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    st.markdown("### ℹ️ Project Info")
-    st.info("""
+    st.markdown(f"### ℹ️ Project Info", unsafe_allow_html=True)
+    st.info(f"""
     **Telco Customer Churn Analysis**
     
     - Dataset: 7,043 customers
@@ -255,9 +273,8 @@ with st.sidebar:
     - Best Accuracy: ~80%
     """)
     
-    st.markdown("### 🔗 Quick Links")
-    st.markdown("- [📊 GitHub Repo](https://github.com/harshita1109/Customer_churn_prediction)")
-    st.markdown("- [📈 Power BI Dashboard](./Telco%20Customer%20Churn%20Insights%20Dashboard.pbix)")
+    st.markdown(f"### 🔗 Quick Links", unsafe_allow_html=True)
+    st.markdown(f"- [📊 GitHub Repo](https://github.com/harshita1109/Customer_churn_prediction)")
 
 df, df_processed = load_and_prepare_data()
 models = train_models(df_processed)
@@ -269,14 +286,14 @@ churn_rate = (churned / total_customers) * 100
 
 st.markdown("<div class='main-content'>", unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; font-size: 3em;'>📊 Telco Customer Churn Analysis</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: rgba(255,255,255,0.7); font-size: 1.2em;'>Predictive Analytics for Customer Retention | Powered by Machine Learning</p>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; font-size: 3em; color: {TEXT_COLOR};'>📊 Telco Customer Churn Analysis</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: {'rgba(255,255,255,0.7)' if THEME == 'Dark' else 'rgba(0,0,0,0.6)'}; font-size: 1.2em;'>Predictive Analytics for Customer Retention | Powered by Machine Learning</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["🏠 Dashboard", "📈 EDA Analysis", "🤖 Models", "💡 Insights", "🔮 Predict"])
 
 with tab1:
-    st.markdown("<div class='section-header'>📊 Executive Summary</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>📊 Executive Summary</div>", unsafe_allow_html=True)
     
     cols = st.columns(4)
     with cols[0]:
@@ -296,18 +313,14 @@ with tab1:
         fig = go.Figure(data=[go.Pie(
             labels=['Retained', 'Churned'],
             values=[retained, churned],
-            marker=dict(colors=['#38ef7d', '#f45c43']),
+            marker=dict(colors=CHURN_COLORS),
             textinfo='percent+label',
             textfont=dict(size=14, color='white'),
             hole=0.6,
             pull=[0, 0.1]
         )])
+        fig.update_layout(**get_chart_layout('Customer Distribution'))
         fig.update_layout(
-            title=dict(text='Customer Distribution', font=dict(size=18, color='white')),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
-            showlegend=True,
             legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5)
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -316,23 +329,17 @@ with tab1:
         fig2 = go.Figure(go.Bar(
             x=['Retained', 'Churned'],
             y=[retained, churned],
-            marker=dict(color=['#38ef7d', '#f45c43'], line=dict(color='white', width=2)),
+            marker=dict(color=CHURN_COLORS, line=dict(color='white', width=2)),
             text=[f'{retained:,}', f'{churned:,}'],
             textposition='outside',
-            textfont=dict(size=16, color='white')
+            textfont=dict(size=16, color=TEXT_COLOR)
         ))
-        fig2.update_layout(
-            title=dict(text='Churn Count', font=dict(size=18, color='white')),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
-            yaxis=dict(gridcolor='rgba(255,255,255,0.1)'),
-            showlegend=False
-        )
+        fig2.update_layout(**get_chart_layout('Churn Count'))
+        fig2.update_layout(showlegend=False)
         st.plotly_chart(fig2, use_container_width=True)
     
     st.markdown("###")
-    st.markdown("<div class='section-header'>🔥 Key Risk Factors</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>🔥 Key Risk Factors</div>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     
@@ -345,13 +352,8 @@ with tab1:
             text=[f'{v:.1f}%' for v in contract_churn.values],
             textposition='outside'
         ))
-        fig.update_layout(
-            title='Churn by Contract',
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
-            yaxis=dict(title='Churn Rate %', gridcolor='rgba(255,255,255,0.1)')
-        )
+        fig.update_layout(**get_chart_layout('Churn by Contract'))
+        fig.update_layout(yaxis=dict(title='Churn Rate %', gridcolor=GRID_COLOR))
         st.plotly_chart(fig, use_container_width=True)
     
     internet_churn = df.groupby('InternetService')['Churn'].apply(lambda x: (x == 'Yes').mean() * 100)
@@ -363,13 +365,8 @@ with tab1:
             text=[f'{v:.1f}%' for v in internet_churn.values],
             textposition='outside'
         ))
-        fig2.update_layout(
-            title='Churn by Internet',
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
-            yaxis=dict(title='Churn Rate %', gridcolor='rgba(255,255,255,0.1)')
-        )
+        fig2.update_layout(**get_chart_layout('Churn by Internet'))
+        fig2.update_layout(yaxis=dict(title='Churn Rate %', gridcolor=GRID_COLOR))
         st.plotly_chart(fig2, use_container_width=True)
     
     payment_churn = df.groupby('PaymentMethod')['Churn'].apply(lambda x: (x == 'Yes').mean() * 100)
@@ -382,17 +379,12 @@ with tab1:
             textposition='outside',
             orientation='h'
         ))
-        fig3.update_layout(
-            title='Churn by Payment',
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
-            xaxis=dict(title='Churn Rate %', gridcolor='rgba(255,255,255,0.1)')
-        )
+        fig3.update_layout(**get_chart_layout('Churn by Payment'))
+        fig3.update_layout(xaxis=dict(title='Churn Rate %', gridcolor=GRID_COLOR))
         st.plotly_chart(fig3, use_container_width=True)
 
 with tab2:
-    st.markdown("<div class='section-header'>📈 Exploratory Data Analysis</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>📈 Exploratory Data Analysis</div>", unsafe_allow_html=True)
     
     st.subheader("👥 Demographics Analysis")
     col1, col2 = st.columns(2)
@@ -400,28 +392,22 @@ with tab2:
     with col1:
         gender_churn = df.groupby(['gender', 'Churn']).size().unstack()
         fig = go.Figure(data=[
-            go.Bar(name='No Churn', x=gender_churn.index, y=gender_churn['No'], marker_color='#38ef7d'),
-            go.Bar(name='Churned', x=gender_churn.index, y=gender_churn['Yes'], marker_color='#f45c43')
+            go.Bar(name='No Churn', x=gender_churn.index, y=gender_churn['No'], marker_color=CHURN_COLORS[0]),
+            go.Bar(name='Churned', x=gender_churn.index, y=gender_churn['Yes'], marker_color=CHURN_COLORS[1])
         ])
-        fig.update_layout(
-            barmode='stack', title='Churn by Gender',
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'), legend=dict(orientation="h", y=1.1)
-        )
+        fig.update_layout(barmode='stack', **get_chart_layout('Churn by Gender'))
+        fig.update_layout(legend=dict(orientation="h", y=1.1))
         st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         senior_data = df.groupby(['SeniorCitizen', 'Churn']).size().unstack()
         senior_data.index = ['Non-Senior', 'Senior']
         fig2 = go.Figure(data=[
-            go.Bar(name='No Churn', x=senior_data.index, y=senior_data['No'], marker_color='#38ef7d'),
-            go.Bar(name='Churned', x=senior_data.index, y=senior_data['Yes'], marker_color='#f45c43')
+            go.Bar(name='No Churn', x=senior_data.index, y=senior_data['No'], marker_color=CHURN_COLORS[0]),
+            go.Bar(name='Churned', x=senior_data.index, y=senior_data['Yes'], marker_color=CHURN_COLORS[1])
         ])
-        fig2.update_layout(
-            barmode='stack', title='Churn by Senior Status',
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'), legend=dict(orientation="h", y=1.1)
-        )
+        fig2.update_layout(barmode='stack', **get_chart_layout('Churn by Senior Status'))
+        fig2.update_layout(legend=dict(orientation="h", y=1.1))
         st.plotly_chart(fig2, use_container_width=True)
     
     st.subheader("⏱️ Tenure Analysis")
@@ -429,13 +415,10 @@ with tab2:
     
     with col1:
         fig = go.Figure()
-        fig.add_trace(go.Box(y=df[df['Churn']=='No']['tenure'], name='Retained', marker_color='#38ef7d'))
-        fig.add_trace(go.Box(y=df[df['Churn']=='Yes']['tenure'], name='Churned', marker_color='#f45c43'))
-        fig.update_layout(
-            title='Tenure Distribution by Churn',
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'), yaxis=dict(title='Tenure (Months)')
-        )
+        fig.add_trace(go.Box(y=df[df['Churn']=='No']['tenure'], name='Retained', marker_color=CHURN_COLORS[0]))
+        fig.add_trace(go.Box(y=df[df['Churn']=='Yes']['tenure'], name='Churned', marker_color=CHURN_COLORS[1]))
+        fig.update_layout(**get_chart_layout('Tenure Distribution by Churn'))
+        fig.update_layout(yaxis=dict(title='Tenure (Months)'))
         st.plotly_chart(fig, use_container_width=True)
     
     with col2:
@@ -450,12 +433,9 @@ with tab2:
             fill='tozeroy',
             fillcolor='rgba(102, 126, 234, 0.3)'
         ))
-        fig2.update_layout(
-            title='Churn Rate by Tenure',
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'), yaxis=dict(title='Churn Rate %', gridcolor='rgba(255,255,255,0.1)'),
-            xaxis=dict(title='Tenure (Months)')
-        )
+        fig2.update_layout(**get_chart_layout('Churn Rate by Tenure'))
+        fig2.update_layout(yaxis=dict(title='Churn Rate %', gridcolor=GRID_COLOR))
+        fig2.update_layout(xaxis=dict(title='Tenure (Months)'))
         st.plotly_chart(fig2, use_container_width=True)
     
     st.subheader("💰 Financial Analysis")
@@ -463,27 +443,20 @@ with tab2:
     
     with col1:
         fig = go.Figure()
-        fig.add_trace(go.Box(y=df[df['Churn']=='No']['MonthlyCharges'], name='Retained', marker_color='#38ef7d'))
-        fig.add_trace(go.Box(y=df[df['Churn']=='Yes']['MonthlyCharges'], name='Churned', marker_color='#f45c43'))
-        fig.update_layout(
-            title='Monthly Charges by Churn',
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'), yaxis=dict(title='Monthly Charges ($)')
-        )
+        fig.add_trace(go.Box(y=df[df['Churn']=='No']['MonthlyCharges'], name='Retained', marker_color=CHURN_COLORS[0]))
+        fig.add_trace(go.Box(y=df[df['Churn']=='Yes']['MonthlyCharges'], name='Churned', marker_color=CHURN_COLORS[1]))
+        fig.update_layout(**get_chart_layout('Monthly Charges by Churn'))
+        fig.update_layout(yaxis=dict(title='Monthly Charges ($)'))
         st.plotly_chart(fig, use_container_width=True)
     
     with col2:
         fig2 = px.scatter(df, x='tenure', y='MonthlyCharges', color='Churn',
-                          color_discrete_map={'No': '#38ef7d', 'Yes': '#f45c43'})
-        fig2.update_layout(
-            title='Tenure vs Monthly Charges',
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white')
-        )
+                          color_discrete_map={'No': CHURN_COLORS[0], 'Yes': CHURN_COLORS[1]})
+        fig2.update_layout(**get_chart_layout('Tenure vs Monthly Charges'))
         st.plotly_chart(fig2, use_container_width=True)
 
 with tab3:
-    st.markdown("<div class='section-header'>🤖 Machine Learning Models</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>🤖 Machine Learning Models</div>", unsafe_allow_html=True)
     
     st.subheader("📊 Model Performance Comparison")
     
@@ -509,9 +482,9 @@ with tab3:
         line_color='#38ef7d'
     ))
     fig.update_layout(
-        polar=dict(radialaxis=dict(visible=True, range=[0, 1], gridcolor='rgba(255,255,255,0.2)')),
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white'),
+        polar=dict(radialaxis=dict(visible=True, range=[0, 1], gridcolor=GRID_COLOR)),
+        paper_bgcolor=PLOT_BG,
+        font=dict(color=TEXT_COLOR),
         showlegend=True,
         legend=dict(orientation="h", y=1.1)
     )
@@ -534,17 +507,17 @@ with tab3:
         fig2 = go.Figure(go.Indicator(
             mode = "gauge+number",
             value = best_score * 100,
-            title = {"text": f"Best Model: {best_model}", "font": {"size": 20, "color": "white"}},
+            title = {"text": f"Best Model: {best_model}", "font": {"size": 20, "color": TEXT_COLOR}},
             gauge = {
-                'axis': {'range': [0, 100], 'tickcolor': "white"},
+                'axis': {'range': [0, 100], 'tickcolor': TEXT_COLOR},
                 'bar': {'color': "#38ef7d"},
                 'bgcolor': "rgba(0,0,0,0.3)",
                 'borderwidth': 2,
                 'bordercolor': "white",
             },
-            number = {'suffix': "%", 'font': {"size": 40, "color": "white"}}
+            number = {'suffix': "%", 'font': {"size": 40, "color": TEXT_COLOR}}
         ))
-        fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color='white'))
+        fig2.update_layout(paper_bgcolor=PLOT_BG, font=dict(color=TEXT_COLOR))
         st.plotly_chart(fig2, use_container_width=True)
     
     st.subheader("🎯 Feature Importance")
@@ -559,17 +532,12 @@ with tab3:
         orientation='h',
         marker=dict(color=px.colors.sequential.Viridis)
     ))
-    fig.update_layout(
-        title='Top 15 Features (XGBoost)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white'),
-        xaxis=dict(title='Importance', gridcolor='rgba(255,255,255,0.1)')
-    )
+    fig.update_layout(**get_chart_layout('Top 15 Features (XGBoost)'))
+    fig.update_layout(xaxis=dict(title='Importance', gridcolor=GRID_COLOR))
     st.plotly_chart(fig, use_container_width=True)
 
 with tab4:
-    st.markdown("<div class='section-header'>💡 Business Insights & Recommendations</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>💡 Business Insights & Recommendations</div>", unsafe_allow_html=True)
     
     insights = [
         ("📊 Overall Churn Rate", f"{churn_rate:.1f}% ({churned:,} out of {total_customers:,} customers)", "info"),
@@ -583,13 +551,13 @@ with tab4:
     for title, desc, card_type in insights:
         st.markdown(f"""
         <div class="insight-card {card_type}">
-            <h3>{title}</h3>
-            <p>{desc}</p>
+            <h3 style="color: {TEXT_COLOR};">{title}</h3>
+            <p style="color: {'rgba(255,255,255,0.8)' if THEME == 'Dark' else 'rgba(0,0,0,0.7)'}">{desc}</p>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("<div class='section-header'>🎯 Strategic Recommendations</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>🎯 Strategic Recommendations</div>", unsafe_allow_html=True)
     
     recommendations = [
         ("1️⃣ Convert Month-to-Month to Annual", "Offer 20% discount for annual contracts - target 3000+ high-risk customers", "success"),
@@ -603,14 +571,14 @@ with tab4:
     for title, desc, rec_type in recommendations:
         color = '#38ef7d' if rec_type == 'success' else '#f45c43' if rec_type == 'warning' else '#4facfe'
         st.markdown(f"""
-        <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin: 10px 0; border-left: 4px solid {color};">
-            <h4 style="color: white; margin: 0;">{title}</h4>
-            <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0;">{desc}</p>
+        <div style="background: {CARD_BG}; border-radius: 10px; padding: 15px; margin: 10px 0; border-left: 4px solid {color};">
+            <h4 style="color: {TEXT_COLOR}; margin: 0;">{title}</h4>
+            <p style="color: {'rgba(255,255,255,0.8)' if THEME == 'Dark' else 'rgba(0,0,0,0.7)'}; margin: 5px 0 0 0;">{desc}</p>
         </div>
         """, unsafe_allow_html=True)
 
 with tab5:
-    st.markdown("<div class='section-header'>🔮 Customer Churn Predictor</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='section-header'>🔮 Customer Churn Predictor</div>", unsafe_allow_html=True)
     st.markdown("Enter customer details to predict churn probability")
     
     col1, col2 = st.columns(2)
@@ -657,8 +625,8 @@ with tab5:
             risk = 'Low' if prob < 0.3 else 'Medium' if prob < 0.7 else 'High'
             
             st.markdown(f"""
-            <div style="text-align: center; padding: 30px; background: rgba(255,255,255,0.1); border-radius: 20px;">
-                <h2 style="color: white; margin-bottom: 10px;">Churn Probability</h2>
+            <div style="text-align: center; padding: 30px; background: {CARD_BG}; border-radius: 20px;">
+                <h2 style="color: {TEXT_COLOR}; margin-bottom: 10px;">Churn Probability</h2>
                 <div style="font-size: 4em; font-weight: bold; color: {color};">{prob:.1%}</div>
                 <div style="font-size: 1.5em; color: {color}; margin-top: 10px;">{risk} Risk</div>
             </div>
@@ -673,7 +641,7 @@ with tab5:
 
 st.markdown("---")
 st.markdown(f"""
-<div style="text-align: center; color: rgba(255,255,255,0.6); padding: 20px;">
+<div style="text-align: center; color: {'rgba(255,255,255,0.6)' if THEME == 'Dark' else 'rgba(0,0,0,0.5)'}; padding: 20px;">
     <p>📊 Telco Customer Churn Analysis | Created by Harshita Sharma</p>
     <p>Powered by Python, Streamlit & Machine Learning</p>
 </div>
