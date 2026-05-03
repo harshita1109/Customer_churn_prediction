@@ -68,8 +68,8 @@ Final File Used: `cleaned_telco_churn.csv` (preprocessed with Python)
 | Folder/File                             | Description                     |
 |----------------------------------------|---------------------------------|
 | `dataset.csv`                          | Original dataset               |
-| `checkpoint.csv`                       | Checkpoint data                |
-| `main.ipynb`                           | Python notebook for EDA        |
+| `main.py`                              | Python script (run with `python main.py`) |
+| `output/`                              | Generated charts (PNG files)   |
 | `Telco Customer Churn Insights Dashboard.pbix` | Power BI dashboard file |
 | `README.md`                            | Project documentation          |
 
@@ -77,10 +77,43 @@ Final File Used: `cleaned_telco_churn.csv` (preprocessed with Python)
 
 ##  How to Run
 
-1. Clone the repository:
-   bash
-   git clone https://github.com/harshita1109/Customer_churn_prediction.git
-   cd Customer_churn_prediction
+##  Key Results
+
+| Metric | Value |
+|--------|-------|
+| Total Customers | 7,043 |
+| Churned Customers | 1,869 (26.5%) |
+| Retained Customers | 5,174 (73.5%) |
+| Model Accuracy | 80.48% |
+| Model ROC AUC | 84.21% |
+
+### Top Churn Risk Factors
+1. **Contract Type** - Month-to-month contracts have highest churn risk
+2. **Tenure** - New customers (shorter tenure) are more likely to churn
+3. **Internet Service** - Fiber optic customers show higher churn
+
+---
+
+### Python Analysis (main.py)
+
+```bash
+# Install dependencies
+pip install pandas seaborn matplotlib scikit-learn xgboost
+
+# Run the project
+python main.py
+```
+
+This will:
+- Load and clean the dataset
+- Perform EDA and generate charts
+- Train a churn prediction model
+- Display key results in the terminal
+- Save charts to the `output/` folder
+
+### Power BI Dashboard
+
+Open `Telco Customer Churn Insights Dashboard.pbix` in Power BI Desktop to view interactive visualizations.
 
 
 ## Author 
