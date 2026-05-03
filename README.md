@@ -49,7 +49,7 @@ Final File Used: `cleaned_telco_churn.csv` (preprocessed with Python)
 - Senior Citizen Status
 - Internet Service Type
 - Payment Method
-  
+   
 
 
 ##  Python Workflow Summary
@@ -98,11 +98,6 @@ If you found this project useful or inspiring:
 - Connect with me on LinkedIn
 
 
- 
+  
 📌 License
 This project is for educational and portfolio purposes only.
-
-
-
-
-
