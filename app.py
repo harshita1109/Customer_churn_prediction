@@ -16,7 +16,7 @@ warnings.filterwarnings('ignore')
 THEME = st.sidebar.radio("🎨 Theme", ["Dark", "Light"], index=0)
 
 if THEME == "Dark":
-    BG_COLOR = "#0f0c29"
+    BG_COLOR = "#000000"
     CARD_BG = "rgba(255,255,255,0.05)"
     TEXT_COLOR = "white"
     GRID_COLOR = "rgba(255,255,255,0.1)"
@@ -51,7 +51,7 @@ CUSTOM_CSS = f"""
     }}
     
     .stApp {{
-        background: {BG_COLOR};
+        background: {BG_COLOR} !important;
         min-height: 100vh;
     }}
     
